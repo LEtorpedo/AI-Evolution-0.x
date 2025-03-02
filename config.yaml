@@ -1,0 +1,46 @@
+evolution:
+  generation_limit: 100
+  initial_population_size: 10
+  max_population_size: 50
+  base_mutation_rate: 0.3
+  mutation_rate: 0.5
+  stability_threshold: 0.7
+  max_retries: 3           # 失败重试次数
+  max_attribute_age: 3  # 属性最大存活代数
+
+algebra:
+  matrix_dim: 4
+  hopf_epsilon: 1e-6
+  quantum_scale: 0.0       # 量子化参数（v0.2启用）
+
+storage:
+  compression_ratio: 0.7
+  archive_interval: 5
+  snapshot_path: "./storage/genetic_pool" 
+
+safety:
+  rollback_depth: 3        # 最大回滚深度
+  validation_timeout: 60   # 秒
+
+logging:
+  mutation_level: DEBUG  # DEBUG | INFO | WARNING
+  log_path: "./logs/evolution.log"
+
+monitor:
+  log_interval: 1
+  report_interval: 10
+  visualization_interval: 10
+  metrics:
+    - mutation_rate
+    - inheritance_rate
+    - attribute_count
+    - concept_diversity
+  storage:
+    base_path: "./storage/monitor/"
+    reports: "reports/"
+    visualizations: "visualizations/"
+    metrics: "metrics/"
+  visualization:
+    enabled: true
+    format: "png"
+    dpi: 300

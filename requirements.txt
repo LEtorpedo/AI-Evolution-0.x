@@ -1,0 +1,13 @@
+# 核心依赖
+numpy>=1.23,<1.24
+scipy>=1.9,<1.10
+pyyaml>=6.0
+tqdm>=4.65
+
+# 开发工具
+pytest>=7.2
+pylint>=2.17
+memory-profiler>=0.61
+
+# 演化监控
+matplotlib>=3.7  # 用于可视化演化过程
