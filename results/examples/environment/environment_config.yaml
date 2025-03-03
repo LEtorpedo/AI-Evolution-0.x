@@ -1,0 +1,33 @@
+agent:
+  enable_memory: false
+evolution:
+  base_mutation_rate: 0.4
+  dynamic_environment: true
+  generation_limit: 100
+  inheritance_factor: 0.5
+  initial_population_size: 30
+  max_population_size: 100
+  selection_pressure: 0.7
+monitor:
+  log_interval: 1
+  metrics:
+  - mutation_rate
+  - inheritance_rate
+  - attribute_count
+  - concept_diversity
+  - population_size
+  - fitness_average
+  - fitness_max
+  - fitness_min
+  - environment_pressure
+  report_interval: 5
+  storage:
+    base_path: ./results/examples/environment/
+    metrics: metrics/
+    reports: reports/
+    visualizations: visualizations/
+  visualization:
+    dpi: 300
+    enabled: true
+    format: png
+  visualization_interval: 5

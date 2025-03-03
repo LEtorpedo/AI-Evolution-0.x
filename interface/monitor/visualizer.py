@@ -26,9 +26,22 @@ class EvolutionVisualizer:
             self.config = yaml.safe_load(f)['monitor']
         
         # 初始化存储路径
-        self.base_path = Path(self.config['storage']['base_path'])
-        self.vis_path = self.base_path / self.config['storage']['visualizations']
-        self.vis_path.mkdir(parents=True, exist_ok=True)
+        if 'storage' in self.config:
+            self.base_path = Path(self.config['storage']['base_path'])
+            self.viz_path = self.base_path / self.config['storage'].get('visualizations', 'visualizations')
+        else:
+            # 使用默认路径
+            self.base_path = Path('./results')
+            self.viz_path = self.base_path / 'visualizations'
+        
+        self.viz_path.mkdir(parents=True, exist_ok=True)
+        
+        # 可视化设置
+        self.viz_config = self.config.get('visualization', {})
+        self.format = self.viz_config.get('format', 'png')
+        self.dpi = self.viz_config.get('dpi', 300)
+        
+        logger.info(f"Visualizer initialized with output path: {self.viz_path}")
         
         # 设置绘图样式
         self.setup_plot_style()
@@ -106,8 +119,8 @@ class EvolutionVisualizer:
         
         plt.tight_layout()
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        save_path = self.vis_path / f'evolution_trends_{timestamp}.png'
-        plt.savefig(save_path, dpi=self.config['visualization']['dpi'])
+        save_path = self.viz_path / f'evolution_trends_{timestamp}.png'
+        plt.savefig(save_path, dpi=self.dpi)
         plt.close()
         
         logger.info(f"Evolution trends plot saved to {save_path}")
@@ -164,3 +177,98 @@ class EvolutionVisualizer:
         # 添加数值标签
         for i, count in enumerate(counts):
             ax.text(i, count, str(count), ha='center', va='bottom')
+
+    def visualize_generation(self, generation):
+        """为特定代生成可视化
+        
+        Args:
+            generation: 代数
+        """
+        try:
+            # 获取历史数据
+            history = self.analytics.history
+            
+            if history.empty or 'generation' not in history.columns:
+                logger.warning("无法生成可视化：历史数据为空或缺少必要列")
+                return
+            
+            # 过滤数据
+            data = history[history['generation'] <= generation]
+            
+            if data.empty:
+                logger.warning(f"无法生成可视化：没有找到代数 {generation} 的数据")
+                return
+            
+            # 创建图表
+            self._create_population_chart(data, generation)
+            self._create_diversity_chart(data, generation)
+            self._create_mutation_chart(data, generation)
+            
+            logger.info(f"Generation {generation} visualizations created")
+        except Exception as e:
+            logger.error(f"可视化生成失败: {e}")
+            import traceback
+            traceback.print_exc()
+    
+    def _create_population_chart(self, data, generation):
+        """创建种群图表"""
+        try:
+            if 'population_size' not in data.columns:
+                return
+            
+            plt.figure(figsize=(10, 6))
+            plt.plot(data['generation'], data['population_size'], 'b-')
+            plt.title(f'种群大小变化 (至代数 {generation})')
+            plt.xlabel('代数')
+            plt.ylabel('种群大小')
+            plt.grid(True, alpha=0.3)
+            plt.tight_layout()
+            
+            # 保存图表
+            file_path = self.viz_path / f'population_gen_{generation}.{self.format}'
+            plt.savefig(file_path, dpi=self.dpi)
+            plt.close()
+        except Exception as e:
+            logger.warning(f"种群图表生成失败: {e}")
+    
+    def _create_diversity_chart(self, data, generation):
+        """创建多样性图表"""
+        try:
+            if 'concept_diversity' not in data.columns:
+                return
+            
+            plt.figure(figsize=(10, 6))
+            plt.plot(data['generation'], data['concept_diversity'], 'g-')
+            plt.title(f'概念多样性变化 (至代数 {generation})')
+            plt.xlabel('代数')
+            plt.ylabel('多样性指数')
+            plt.grid(True, alpha=0.3)
+            plt.tight_layout()
+            
+            # 保存图表
+            file_path = self.viz_path / f'diversity_gen_{generation}.{self.format}'
+            plt.savefig(file_path, dpi=self.dpi)
+            plt.close()
+        except Exception as e:
+            logger.warning(f"多样性图表生成失败: {e}")
+    
+    def _create_mutation_chart(self, data, generation):
+        """创建变异图表"""
+        try:
+            if 'mutation_rate' not in data.columns:
+                return
+            
+            plt.figure(figsize=(10, 6))
+            plt.plot(data['generation'], data['mutation_rate'], 'r-')
+            plt.title(f'变异率变化 (至代数 {generation})')
+            plt.xlabel('代数')
+            plt.ylabel('变异率')
+            plt.grid(True, alpha=0.3)
+            plt.tight_layout()
+            
+            # 保存图表
+            file_path = self.viz_path / f'mutation_gen_{generation}.{self.format}'
+            plt.savefig(file_path, dpi=self.dpi)
+            plt.close()
+        except Exception as e:
+            logger.warning(f"变异图表生成失败: {e}")

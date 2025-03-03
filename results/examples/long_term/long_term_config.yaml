@@ -1,0 +1,38 @@
+agent:
+  enable_memory: true
+  memory_capacity: 10
+  memory_decay: 0.1
+evolution:
+  adaptive_mutation: true
+  adaptive_selection: true
+  base_mutation_rate: 0.4
+  concept_reuse: true
+  generation_limit: 300
+  inheritance_factor: 0.5
+  initial_population_size: 30
+  long_term_memory: true
+  max_population_size: 100
+  selection_pressure: 0.7
+monitor:
+  log_interval: 1
+  metrics:
+  - mutation_rate
+  - inheritance_rate
+  - avg_attributes
+  - unique_attributes
+  - concept_diversity
+  - population_size
+  - total_concepts
+  - natural_mutations
+  - safe_triggers
+  report_interval: 10
+  storage:
+    base_path: ./results/examples/long_term
+    metrics: metrics
+    reports: reports
+    visualizations: visualizations
+  visualization:
+    dpi: 300
+    enabled: true
+    format: png
+  visualization_interval: 10
