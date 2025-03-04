@@ -41,3 +41,72 @@ ENV/
 .vscode/
 *.swp
 *.swo
+
+# 基础排除
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+
+# 项目特定目录排除
+/results/examples/**/*.csv   # 保留目录结构但排除生成的数据
+/results/examples/**/*.png   # 保留目录但排除图表
+!/results/examples/report/   # 保留报告目录
+
+# Python开发文件
+__pycache__/
+*.py[cod]
+*.so
+.python-version
+.env
+.venv/
+venv/
+
+# 构建产物
+build/
+dist/
+*.egg-info/
+*.egg
+.ipynb_checkpoints/
+
+# 日志和诊断文件
+*.log
+logs/
+profiling/
+debug/
+
+# IDE配置
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 测试相关
+.coverage
+htmlcov/
+.pytest_cache/
+/test_results/
+
+# 大文件和二进制文件
+*.h5
+*.pkl
+*.joblib
+*.bin
+
+# 文档生成
+/docs/_build/
+/docs/api/
+
+# 特殊文件排除
+# 保留配置文件模板但排除实际配置
+/config/*.yaml
+!/config/*.example.yaml
+
+# 实验性代码排除
+/experiments/
+/sandbox/
+
+# 包管理
+Pipfile
+Pipfile.lock
+poetry.lock
